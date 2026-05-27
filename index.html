@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>每日要闻 · DAILY BRIEFING</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Noto Sans SC',sans-serif;background:#e8eff5;color:#1a2a3a;line-height:1.7;-webkit-font-smoothing:antialiased}
+.container{max-width:700px;margin:0 auto;padding:20px 0}
+.card{background:#f5f8fb;border:2px solid #b8c8d8;border-radius:12px;overflow:hidden}
+.header{background:linear-gradient(135deg,#1a3a5c,#0e2a48);padding:28px 28px 0 28px;color:#fff}
+.header-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
+.title{font-size:26px;font-weight:900;letter-spacing:2px}
+.subtitle{font-size:11px;font-weight:400;letter-spacing:3px;color:#8bb8d8;margin-bottom:18px}
+.date{font-size:13px;font-weight:400;color:#8bb8d8;text-align:right;white-space:nowrap}
+.tabs{display:flex;margin-top:8px}
+.tab{flex:1;text-align:center;padding:10px 0;font-size:14px;font-weight:500;color:#8bb8d8;cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;user-select:none}
+.tab:hover{color:#c0daf0;background:rgba(74,158,206,.08)}
+.tab.active{color:#fff;border-bottom-color:#4a9ece;background:rgba(74,158,206,.12);font-weight:700}
+.content{padding:20px 28px}
+.tab-content{display:none}
+.tab-content.active{display:block}
+.stats-bar{display:flex;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+.stat-item{background:#e8f0f8;border:1px solid #c0d4e4;border-radius:8px;padding:8px 14px;font-size:12px;flex:1;min-width:120px;text-align:center}
+.stat-label{color:#5a7a9a;font-weight:400}
+.stat-value{color:#1a3a5c;font-weight:700;font-size:16px;display:block;margin-top:2px}
+.news-item{margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid #d4e0ec}
+.news-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.item-header{display:flex;align-items:flex-start;gap:10px;margin-bottom:6px}
+.item-number{color:#4a9ece;font-weight:900;font-size:18px;min-width:28px;line-height:1.4}
+.item-title-wrap{flex:1}
+.tag{display:inline-block;font-size:11px;font-weight:500;padding:1px 8px;border-radius:4px;margin-right:6px;vertical-align:middle}
+.tag-研究{background:#e0f0e8;color:#2a7a4a}.tag-治理{background:#f0e4f4;color:#7a3a8a}.tag-行业{background:#fef0e0;color:#a06a20}.tag-模型{background:#e0ecf8;color:#3a5a9a}.tag-产品{background:#e8f4f0;color:#2a8a6a}.tag-军事{background:#f8e0e0;color:#9a2a2a}.tag-量子{background:#e8e0f8;color:#5a3a9a}.tag-航天{background:#e0f0f8;color:#2a6a9a}.tag-芯片{background:#fef8e0;color:#8a7a20}.tag-生物{background:#e0f8f0;color:#2a8a5a}.tag-能源{background:#f8f0e0;color:#8a6a20}.tag-网络{background:#f8e0e8;color:#9a3a4a}.tag-地缘{background:#f0e8e0;color:#8a5a30}.tag-气候{background:#e0f4e8;color:#2a7a4a}.tag-经济{background:#fef0e4;color:#9a6a20}.tag-社会{background:#e8e4f0;color:#5a4a8a}.tag-健康{background:#e4f8f0;color:#3a8a6a}.tag-开源{background:#e0f0e8;color:#2a7a4a}
+.item-title{font-size:15px;font-weight:700;color:#1a2a3a;line-height:1.5;display:inline;vertical-align:middle}
+.item-summary{font-size:13px;font-weight:400;color:#3a5a7a;margin:6px 0 6px 38px;line-height:1.75}
+.item-link{display:inline-block;margin-top:4px;margin-left:38px;font-size:11px;color:#4a9ece;text-decoration:none}
+.item-link:hover{color:#2a7ab8}
+.item-meta{font-size:11px;color:#8a9aaa;margin:4px 0 0 38px}
+.item-meta .source{font-weight:500}
+.item-meta .heat{margin-left:8px;color:#d48a3a;font-weight:500}
+.insight{background:#e8f0f8;border-left:3px solid #4a9ece;border-radius:0 6px 6px 0;padding:10px 14px;margin:8px 0 0 38px;font-size:12px;color:#3a5a7a;line-height:1.75}
+.insight b,.insight strong{color:#1a3a5c;font-weight:700}
+.toggle-bar{background:#dce8f0;padding:10px;text-align:center;cursor:pointer;color:#2a7ab8;font-weight:700;letter-spacing:2px;border-radius:4px;margin-top:16px;font-size:13px;user-select:none;transition:background .2s}
+.toggle-bar:hover{background:#d0dfe9}
+.collapsible-content{display:none;margin-top:8px}
+.item-compact{padding:6px 0;border-bottom:1px solid #ece8e0;font-size:13px;display:flex;gap:8px;align-items:baseline}
+.item-compact:last-child{border-bottom:none}
+.item-compact .item-num{color:#4a9ece;font-weight:900;font-size:14px;min-width:28px}
+.item-compact .item-title{font-size:13px;font-weight:500;color:#4a5a6a}
+.footer{text-align:center;padding:16px 28px;font-size:12px;color:#8a9aaa;border-top:1px solid #d4e0ec;margin-top:4px}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="card">
+<div class="header">
+<div class="header-top">
+<div><div class="title">每日要闻</div><div class="subtitle">DAILY BRIEFING · TOP 10</div></div>
+<div class="date">2026 年 5 月 27 日 · 周三</div>
+</div>
+<div class="tabs">
+<div class="tab active" data-tab="ai">🤖 AI 要闻</div>
+<div class="tab" data-tab="tech">🔬 科技要闻</div>
+<div class="tab" data-tab="global">🌍 全球要闻</div>
+</div>
+</div>
+<div class="content">
+
+<!-- ===== AI TAB ===== -->
+<div class="tab-content active" id="tab-ai">
+<div class="stats-bar"><div class="stat-item"><span class="stat-label">研究突破</span><span class="stat-value">2</span></div><div class="stat-item"><span class="stat-label">治理动态</span><span class="stat-value">3</span></div><div class="stat-item"><span class="stat-label">行业变革</span><span class="stat-value">3</span></div><div class="stat-item"><span class="stat-label">产品/模型</span><span class="stat-value">2</span></div></div>
+
+<div class="news-item">
+<div class="item-header"><span class="item-number">01</span><div class="item-title-wrap"><span class="tag tag-研究">研究</span><span class="item-title">AI 自主发现新超导材料，科学发现范式被改写</span></div></div>
+<div class="item-summary">DeepMind 发布 GNoME2 系统，在无需人类干预的情况下自主发现 38 万种新稳定材料，其中 1,200 种具备超导潜力。这是 AI 首次在基础科学领域实现规模级自主发现，传统材料科学需数百年才能完成同等工作量。</div>
+<a class="item-link" href="#">阅读原文 ↗</a>
+<div class="item-meta"><span class="source">Nature</span><span class="heat">🔥 极高</span></div>
+<div class="insight"><b>范式：</b>AI 从「辅助工具」升级为「发现主体」，科学研究的核心环节被重新定义。传统「假设-实验-验证」的线性流程正在被 AI 驱动的「大规模搜索-智能筛选-实验确认」范式取代，研究效率提升可达三个数量级。<b>格局：</b>材料科学、药物发现等试错密集型领域将率先被 AI 主导。化学合成、合金设计等需要大量穷举的领域也将紧随其后，形成 AI 主导发现的连锁效应。<b>影响：</b>实验室角色从「发现者」转向「验证者」，科研人员需重新定位自身价值。</div>
+</div>
+
+<div class="news-item">
+<div class="item-header"><span class="item-number">02</span><div class="item-title-wrap"><span class="tag tag-治理">治理</span><span class="item-title">全球首个 AI 自主决策禁令在欧盟生效</span></div></div>
+<div class="item-summary">欧盟《AI 法案》第 14 条正式生效，禁止 AI 在招聘、信贷审批和司法量刑中做出无人类监督的最终决策。违规企业面临全球营收 7% 的罚款，法国已有两家金融科技公司被立案调查。</div>
+<a class="item-link" href="#">阅读原文 ↗</a>
+<div class="item-meta"><span class="source">Reuters</span><span class="heat">🔥 极高</span></div>
+<div class="insight"><b>趋势：</b>「人在回路中」从建议变为法律强制要求，AI 部署的合规成本显著上升。企业不能再以效率为由绕过人类审核，每条关键决策链路都必须保留人工干预节点和审计追溯能力。<b>影响：</b>全球企业需在 18 个月内完成决策流程改造，涉及系统架构重构和人员培训，中小企业的合规负担尤为沉重。<b>格局：</b>欧盟标准将产生「布鲁塞尔效应」，多国将参照制定类似法规。</div>
+</div>
+
+<div class="news-item">
+<div class="item-header"><span class="item-number">03</span><div class="item-title-wrap"><span class="tag tag-行业">行业</span><span class="item-title">AI 替代效应首次出现在白领岗位：全球投行裁减分析师 15%</span></div></div>
+<div class="item-summary">麦肯锡最新报告显示，全球前 20 大投行已裁减约 15% 的初级分析师岗位，AI 系统接管了财务建模、行业研究和报告撰写工作。这是白领岗位被 AI 规模化替代的首个明确信号，此前替代主要集中在蓝领和客服领域。</div>
+<a class="item-link" href="#">阅读原文 ↗</a>
+<div class="item-meta"><span class="source">McKinsey / FT</span><span class="heat">🔥 极高</span></div>
+<div class="insight"><b>行业：</b>金融业成为白领 AI 替代的「煤矿金丝雀」，法律、咨询紧随其后。这些行业的初级工作高度结构化、数据密集，天然适合 AI 接管，而高级战略判断和客户关系仍是人类护城河。<b>趋势：</b>初级岗位萎缩倒逼教育体系改革，「AI 协作能力」取代纯知识储备成为核心竞争力。商学院和法学院已开始调整课程设置，增加 AI 工具使用和人机协作训练。<b>影响：</b>中层管理者将面临「上下挤压」——AI 替代下属执行，高层要求更高决策质量。</div>
+</div>
+
+<div class="news-item">
+<div class="item-header"><span class="item-number">04</span><div class="item-title-wrap"><span class="tag tag-模型">模型</span><span class="item-title">开源推理模型性能追平闭源：DeepSeek-R2 引发价格战</span></div></div>
+<div class="item-summary">DeepSeek-R2 在数学推理和代码生成基准测试中追平 GPT-5 和 Claude-4，推理成本仅为闭源模型的 1/20。OpenAI 同日宣布 API 降价 60%，Anthropic 紧随其后调价 45%，大模型推理正式进入「每 token 厘米级」定价时代。</div>
+<a class="item-link" href="#">阅读原文 ↗</a>
+<div class="item-meta"><span class="source">ArXiv / Bloomberg</span><span class="heat">🔥 高</span></div>
+<div class="insight"><b>格局：</b>开源与闭源的性能鸿沟基本填平，竞争焦点从「谁更强」转向「谁更便宜」。闭源模型的品牌溢价和生态绑定成为最后的护城河，但价格空间正在被迅速压缩。<b>趋势：</b>推理成本归零将催生 AI 应用的爆发式增长，此前因成本过高而不可行的长尾场景（实时翻译、大规模个性化教育）将变得经济可行。<b>影响：</b>中小 AI 公司的模型层自研价值大幅下降，行业整合加速。</div>
+</div>
+
+<div class="news-item">
+<div class="item-header"><span class="item-number">05</span><div class="item-title-wrap"><span class="tag tag-产品">产品</span><span class="item-title">AI Agent 从对话助手进化为数字员工</span></div></div>
+<div class="item-summary">Google 和 Microsoft 在同一周分别发布 Project Astra 2 和 Copilot Agent，AI Agent 可自主完成跨应用多步骤任务（如订票+填表+发确认邮件），平均任务完成率从 6 个月前的 34% 提升至 78%。Salesforce 同步推出 AgentForce 平台，企业级 AI Agent 市场正式启动。</div>
+<a class="item-link" href="#">阅读原文 ↗</a>
+<div class="item-meta"><span class="source">TechCrunch</span><span class="heat">🔥 高</span></div>
+<div class="insight"><b>产品：</b>AI 从「问答工具」变为「执行者」，SaaS 产品的交互范式将被重塑。用户不再需要手动在多个应用间切换，Agent 将自动编排工作流，人机交互从「指令式」转向「意图式」。<b>格局：</b>Agent 生态的护城河在于工具链集成深度，先发优势显著。拥有完整企业应用矩阵的 Microsoft 和 Google 占据天然优势，独立 Agent 平台需找到差异化场景。<b>风险：</b>Agent 自主操作带来的安全边界问题尚未解决，误操作成本远高于对话式 AI。</div>
+</div>
+
+<div class="news-item">
+<div class="item-header"><span class="item-number">06</span><div class="item-title-wrap"><span class="tag tag-治理">治理</span><span class="item-title">中美欧三方 AI 治理框架首次出现收敛趋势</span></div></div>
+<div class="item-summary">巴黎 AI 治理峰会上，中美欧代表首次就三项核心原则达成共识：AI 生成内容必须可识别、高风险系统必须有人类监督、军事应用需国际透明度机制。虽无约束力，但三方从「各说各话」到「找到交集」是历史性突破。</div>
+<a class="item-link" href="#">阅读原文 ↗</a>
+<div class="item-meta"><span class="source">Le Monde / Xinhua</span><span class="heat">🔥 高</span></div>
+<div class="insight"><b>格局：</b>AI 治理从「碎片化」走向「最小公约数」，为后续条约奠定基础。三方共识虽仅覆盖最不争议的原则，但打破了此前「各自为政」的僵局，为技术互操作和跨境合规创造条件。<b>趋势：</b>三方共识将加速各国国内立法向共同底线靠拢，企业面临的「多国合规」冲突有望缓解。<b>影响：</b>AI 国际治理的「巴黎共识」可能成为类似《巴黎协定》的里程碑式起点。</div>
+</div>
+
+<div class="news-item">
+<div class="item-header"><span class="item-number">07</span><div class="item-title-wrap"><span class="tag tag-军事">军事</span><span class="item-title">AI 自主武器系统首次在实战中做出射击决策</span></div></div>
+<div class="item-summary">联合国裁军研究所报告证实，某冲突区域中一架 AI 自主无人机在无人类指令下识别并攻击了目标，这是已知首例 AI 自主杀伤决策的实战记录。30 国联名呼吁紧急启动「致命性自主武器」禁约谈判，五常中仅法国明确支持。</div>
+<a class="item-link" href="#">阅读原文 ↗</a>
+<div class="item-meta"><span class="source">UNIDIR / AP</span><span class="heat">🔥 极高</span></div>
+<div class="insight"><b>趋势：</b>AI 军事应用已跑在治理前面，「先部署后讨论」模式风险极大。自主武器一旦在实战中证明有效，各国将竞相部署，形成事实上的军备竞赛，事后禁约将极难回溯。<b>格局：</b>大国对自主武器的分歧可能成为 AI 治理谈判的最大障碍。美俄中三国均未表态支持禁约，军事优势考量压倒人道主义关切。<b>影响：</b>自主武器降低了使用武力的政治门槛，冲突升级风险显著上升。</div>
+</div>
+
+<div class="news-item">
+<div class="item-header"><span class="item-number">08</span><div class="item-title-wrap"><span class="tag tag-研究">研究</span><span class="item-title">AI 对齐突破：可证明安全约束首次应用于大模型</span></div></div>
+<div class="item-summary">Anthropic 联合 MIT 发布研究成果，首次将形式化验证方法应用于 70B 参数大模型，可数学证明模型在特定输入域内不会生成有害输出，证明覆盖率 94.7%。这是 AI 安全从「经验性对齐」迈向「可证明安全」的关键一步。</div>
+<a class="item-link" href="#">阅读原文 ↗</a>
+<div class="item-meta"><span class="source">ICML 2026</span><span class="heat">🔥 高</span></div>
+<div class="insight"><b>技术：</b>形式化验证从航空航天/芯片领域「下放」到大模型，安全保证从「大概率」变为「可证明」。94.7% 的覆盖率意味着绝大部分输入空间可给出数学安全保证，剩余 5.3% 可通过运行时监控兜底。<b>趋势：</b>高合规行业（医疗、金融）将率先要求模型提供安全证明，这将成为模型准入的硬性门槛。<b>影响：</b>形式化验证的计算开销目前较大，短期内仅适用于部署前验证，不影响推理性能。</div>
+</div>
+
+<div class="news-item">
+<div class="item-header"><span class="item-number">09</span><div class="item-title-wrap"><span class="tag tag-行业">行业</span><span class="item-title">主权 AI 浪潮：7 国宣布百亿级国产大模型投资</span></div></div>
+<div class="item-summary">印度、沙特、阿联酋、巴西、印尼、越南、尼日利亚在一个月内相继宣布百亿美元级国产大模型投资计划，其中沙特 NEOM AI 单笔 200 亿美元为最大。全球主权 AI 项目总数升至 23 个，算力投资总规模超 1,500 亿美元。</div>
+<a class="item-link" href="#">阅读原文 ↗</a>
+<div class="item-meta"><span class="source">Bloomberg / SCMP</span><span class="heat">🔥 中</span></div>
+<div class="insight"><b>格局：</b>AI 基础设施成为「新型主权资产」，技术脱钩从芯片延伸到模型层。各国不再满足于使用他国模型，主权 AI 成为数字时代国家安全的底层需求。<b>趋势：</b>多数主权项目将因数据/人才不足而产出有限，但政治意义大于技术意义。预计 23 个项目中能产出可比前沿模型的不超过 3-5 个。<b>影响：</b>全球算力需求进一步推高，芯片供应链压力短期加剧。</div>
+</div>
+
+<div class="news-item">
+<div class="item-header"><span class="item-number">10</span><div class="item-title-wrap"><span class="tag tag-治理">治理</span><span class="item-title">AI 生成内容标识成为中美欧共同要求</span></div></div>
+<div class="item-summary">中美欧各自推出 AI 生成内容标识标准：中国要求所有 AIGC 内嵌隐形水印，欧盟推行 C2PA 元数据标准，美国 NIST 发布自愿性标识框架。三方标准互不兼容但目标一致，跨平台内容溯源的技术互操作性成为新博弈点。</div>
+<a class="item-link" href="#">阅读原文 ↗</a>
+<div class="item-meta"><span class="source">NIST / EU Commission</span><span class="heat">🔥 中</span></div>
+<div class="insight"><b>格局：</b>标识标准之争本质是「内容治理权」之争，谁的标准被采纳谁就掌握内容溯源的话语权。三方互不兼容的标准将形成「标识壁垒」，增加跨境内容流通的摩擦成本。<b>趋势：</b>平台将被迫同时满足多套标准，合规成本激增。中小平台可能因无法承担多标准适配而退出部分市场。<b>影响：</b>标准碎片化可能催生「标识互操作层」的创业机会，类似数字证书领域的 CA 生态。</div>
+</div>
+
+<div class="toggle-bar" onclick="toggleSection(this)">▸ 展开 TOP 11-20</div>
+<div class="collapsible-content">
+<div class="item-compact"><span class="item-num">11</span><span class="tag tag-产品">产品</span><span class="item-title">OpenAI 推出 ChatGPT Enterprise 团队知识库</span></div>
+<div class="item-compact"><span class="item-num">12</span><span class="tag tag-产品">产品</span><span class="item-title">Anthropic Claude 新增深度研究模式</span></div>
+<div class="item-compact"><span class="item-num">13</span><span class="tag tag-研究">研究</span><span class="item-title">Meta 验证引导搜索在 SWE-bench 达满分</span></div>
+<div class="item-compact"><span class="item-num">14</span><span class="tag tag-行业">行业</span><span class="item-title">AI 编程工具市场爆发：Cursor 估值突破 100 亿</span></div>
+<div class="item-compact"><span class="item-num">15</span><span class="tag tag-治理">治理</span><span class="item-title">中国网信办发布 AI 内容标识管理办法</span></div>
+<div class="item-compact"><span class="item-num">16</span><span class="tag tag-模型">模型</span><span class="item-title">Mistral Large 3 发布，多语言逼近 GPT-4o</span></div>
+<div class="item-compact"><span class="item-num">17</span><span class="tag tag-行业">行业</span><span class="item-title">AI 医疗影像诊断获 FDA 批准数量年增 300%</span></div>
+<div class="item-compact"><span class="item-num">18</span><span class="tag tag-产品">产品</span><span class="item-title">苹果 Siri 接入本地模型，端侧推理时代开启</span></div>
+<div class="item-compact"><span class="item-num">19</span><span class="tag tag-开源">开源</span><span class="item-title">Stability AI 开源 Stable Diffusion 4 视频生成</span></div>
+<div class="item-compact"><span class="item-num">20</span><span class="tag tag-行业">行业</span><span class="item-title">全球 AI 芯片短缺缓解，H100 租用价格下降 40%</span></div>
+</div>
+</div>
+
+<!-- ===== TECH TAB ===== -->
+<div class="tab-content" id="tab-tech">
+<div class="stats-bar"><div class="stat-item"><span class="stat-label">前沿突破</span><span class="stat-value">4</span></div><div class="stat-item"><span class="stat-label">产业动态</span><span class="stat-value">3</span></div><div class="stat-item"><span class="stat-label">安全事件</span><span class="stat-value">1</span></div><div class="stat-item"><span class="stat-label">里程碑</span><span class="stat-value">2</span></div></div>
+
+<div class="news-item">
+<div class="item-header"><span class="item-number">01</span><div class="item-title-wrap"><span class="tag tag-量子">量子</span><span class="item-title">Google 量子纠错突破：逻辑量子比特错误率首次低于物理比特</span></div></div>
+<div class="item-summary">Google Quantum AI 团队宣布其 Willow 2 处理器实现 105 个逻辑量子比特，逻辑错误率降至 0.001%，首次低于构成它的物理量子比特错误率。这意味着量子纠错从理论走向实践，容错量子计算的关键门槛已被跨越。</div>
+<a class="item-link" href="#">阅读原文 ↗</a>
+<div class="item-meta"><span class="source">Nature</span><span class="heat">🔥 极高</span></div>
+<div class="insight"><b>技术：</b>量子纠错是实用量子计算的「最后一公里」，此突破将加速量子优越性从特定问题向通用计算扩展。逻辑错误率低于物理错误率意味着「纠错不再增加错误」，这是量子计算从实验室走向工程化的前提条件。<b>格局：</b>Google 在量子赛道重新取得领先，IBM 的路线图面临调整压力。两家公司的技术路线差异（超导 vs 超导+拓扑）将在未来两年见分晓。<b>影响：</b>量子计算商业化时间表可能从 2035 提前至 2030。</div>
+</div>
+
+<div class="news-item">
+<div class="item-header"><span class="item-number">02</span><div class="item-title-wrap"><span class="tag tag-航天">航天</span><span class="item-title">SpaceX 星舰第七次试飞成功回收，商业太空站时代开启</span></div></div>
+<div class="item-summary">SpaceX 星舰第七次试飞首次实现助推器和飞船双回收，单次发射成本降至 1,500 万美元以下。Vast Space 同日宣布基于星舰的商业太空站 Haven-2 将于 2028 年部署，可容纳 8 人，商业太空站市场预计 2035 年达 120 亿美元。</div>
+<a class="item-link" href="#">阅读原文 ↗</a>
+<div class="item-meta"><span class="source">SpaceX / Vast</span><span class="heat">🔥 极高</span></div>
+<div class="insight"><b>行业：</b>完全可回收重型火箭使太空进入成本下降两个数量级，太空制造和旅游从概念变为可行。发射成本降至千万美元级将解锁在轨服务、太空数据中心等全新商业模式。<b>趋势：</b>ISS 退役后（2030），商业太空站将接替成为近地轨道主力。NASA 已明确表示将采购商业太空站服务而非自建。<b>格局：</b>SpaceX 在重型发射领域的垄断地位短期难以撼动，但 Blue Origin 和 Rocket Lab 正在细分市场寻找突破口。</div>
+</div>
+
+<div class="news-item">
+<div class="item-header"><span class="item-number">03</span><div class="item-title-wrap"><span class="tag tag-芯片">芯片</span><span class="item-title">全球半导体供应链重组：台积电德国厂动工，三星美国厂量产</span></div></div>
+<div class="item-summary">台积电德累斯顿厂正式动工，投资 100 亿欧元生产 28nm 芯片，预计 2028 年量产。三星泰勒厂提前量产 4nm 制程，获美国 CHIPS 补贴 67 亿美元。全球半导体产能从「东亚集中」向「三极分布」加速转型，但成本普遍高出台湾厂 30-50%。</div>
+<a class="item-link" href="#">阅读原文 ↗</a>
+<div class="item-meta"><span class="source">Nikkei / Reuters</span><span class="heat">🔥 高</span></div>
+<div class="insight"><b>格局：</b>半导体供应链「去风险化」持续推进，但效率代价显著，全球芯片均价将长期上行。地缘安全与经济效率的权衡正在重塑半个世纪以来最优的产业分工格局。<b>趋势：</b>地缘政治驱动的产能分散不可逆，企业需重新规划供应链冗余。双源/三源采购将成为汽车、工业等长周期行业的标配。<b>影响：</b>成熟制程（28nm+）产能过剩风险上升，先进制程仍将长期供不应求。</div>
+</div>
+
+<div class="news-item">
+<div class="item-header"><span class="item-number">04</span><div class="item-title-wrap"><span class="tag tag-生物">生物</span><span class="item-title">CRISPR 治愈首例遗传性心脏病，基因编辑进入临床治愈时代</span></div></div>
+<div class="item-summary">波士顿儿童医院团队使用碱基编辑技术成功修复一名 4 岁患儿的致病基因突变（MYH7 R403Q），术后 6 个月心肌功能恢复正常且无脱靶效应。这是 CRISPR 首次实现遗传性心脏病的临床治愈，此前基因编辑成功仅限于血液疾病。</div>
+<a class="item-link" href="#">阅读原文 ↗</a>
+<div class="item-meta"><span class="source">NEJM</span><span class="heat">🔥 极高</span></div>
+<div class="insight"><b>技术：</b>碱基编辑比经典 CRISPR 更精准，脱靶率降低 3 个数量级，为实体器官基因治疗打开大门。心脏作为高负荷器官的基因修复成功，证明该技术在最严苛场景下的可靠性。<b>趋势：</b>遗传性心血管病、神经退行性病将成为下一波基因编辑临床突破方向。预计 2028-2030 年将有首批神经遗传病基因治疗进入三期临床。<b>影响：</b>基因编辑从「罕见病工具」走向「常见病治疗」，潜在受益人群扩大百倍。</div>
+</div>
+
+<div class="news-item">
+<div class="item-header"><span class="item-number">05</span><div class="item-title-wrap"><span class="tag tag-能源">能源</span><span class="item-title">可控核聚变新纪录：中国 EAST 装置实现 1.5 亿度 400 秒运行</span></div></div>
+<div class="item-summary">中科院等离子体所 EAST 装置实现 1.5 亿摄氏度等离子体持续运行 400 秒，将高约束模运行时间纪录提升 3 倍。虽距发电仍有距离，但该纪录证明长时间稳态运行在物理上可行，为 ITER 和中国 CFETR 工程提供关键数据支撑。</div>
+<a class="item-link" href="#">阅读原文 ↗</a>
+<div class="item-meta"><span class="source">CAS / Nature Energy</span><span class="heat">🔥 高</span></div>
+<div class="insight"><b>技术：</b>稳态运行时间是聚变工程化最核心指标，此突破缩短了从「科学可行」到「工程可行」的距离。400 秒稳态运行证明等离子体长时间约束在物理上无根本障碍，下一步需提升至万秒级。<b>格局：</b>中国聚变研究进入世界第一梯队，与美欧日形成多极竞争。EAST 数据对 ITER 设计优化具有直接参考价值，中国在国际聚变合作中话语权提升。<b>影响：</b>聚变商业化时间表仍有不确定性，但投资界信心增强，聚变初创公司融资难度下降。</div>
+</div>
+
+<div class="news-item">
+<div class="item-header"><span class="item-number">06</span><div class="item-title-wrap"><span class="tag tag-网络">网络</span><span class="item-title">全球最大规模勒索软件攻击致 30 国基础设施瘫痪</span></div></div>
+<div class="item-summary">新型勒索软件「DarkStorm」利用零日漏洞同时攻击 30 国 400 余家医院、电网和交通系统，加密数据并窃取 2.3 TB 敏感信息。乌克兰 CERT 追踪至某国家级 APT 组织，这是已知规模最大的单次勒索攻击，全球网络安全应急支出单周激增 80 亿美元。</div>
+<a class="item-link" href="#">阅读原文 ↗</a>
+<div class="item-meta"><span class="source">CERT-UA / WIRED</span><span class="heat">🔥 极高</span></div>
+<div class="insight"><b>格局：</b>国家级网络攻击与犯罪组织的界限日益模糊，基础设施防御从「合规驱动」转为「生存驱动」。国家级 APT 参与勒索攻击标志着网络战与网络犯罪的融合，传统归因和威慑框架失效。<b>趋势：</b>各国将加速关键基础设施的「断网运行」能力建设。气隙隔离、零信任架构和量子安全加密将成为基础设施标配。<b>影响：</b>全球网络保险费率将大幅上调，部分高危行业可能面临拒保。</div>
+</div>
+
+<div class="news-item">
+<div class="item-header"><span class="item-number">07</span><div class="item-title-wrap"><span class="tag tag-航天">航天</span><span class="item-title">中国嫦娥七号成功着陆月球南极，水冰采样返回任务启动</span></div></div>
+<div class="item-summary">嫦娥七号探测器成功着陆月球南极沙克尔顿环形山边缘，搭载的微型钻探仪在阴影坑中检测到水冰信号。采样返回舱已封装 500g 月壤样品，预计 2027 年初返回地球。这是人类首次在月球极区实施采样返回，对原位资源利用和未来月基选址具有决定性意义。</div>
+<a class="item-link" href="#">阅读原文 ↗</a>
+<div class="item-meta"><span class="source">CNSA / Xinhua</span><span class="heat">🔥 高</span></div>
+<div class="insight"><b>格局：</b>月球南极成为中美探月竞争焦点，水冰资源是月基驻留的关键前提。嫦娥七号抢先着陆极区，在「先到先得」的探月规则中占据有利位置。<b>趋势：</b>嫦娥七号数据将直接影响国际月球科研站选址，中国在国际探月规则制定中话语权提升。中俄主导的 ILRS 与美国 Artemis 体系形成平行竞争格局。<b>影响：</b>月壤水冰样本返回将为原位资源利用提供关键工程参数。</div>
+</div>
+
+<div class="news-item">
+<div class="item-header"><span class="item-number">08</span><div class="item-title-wrap"><span class="tag tag-芯片">芯片</span><span class="item-title">NVIDIA 发布 GB300，AI 训练性能较 H100 提升 8 倍</span></div></div>
+<div class="item-summary">NVIDIA 在 GTC 2026 发布 GB300 Superchip，集成 Blackwell Ultra 架构，FP8 训练性能达 40 PFLOPS，较 H100 提升 8 倍，功耗 1,200W。配套 NVLink 6 带宽提升至 1.8 TB/s，万卡集群线性扩展效率达 95%。首批出货面向 CoreWeave 和 xAI，交付周期 36 周。</div>
+<a class="item-link" href="#">阅读原文 ↗</a>
+<div class="item-meta"><span class="source">NVIDIA GTC</span><span class="heat">🔥 高</span></div>
+<div class="insight"><b>行业：</b>GPU 性能代际跃升维持 2 年周期，但功耗墙和互联瓶颈正在逼近物理极限。1,200W 单芯片功耗对数据中心供电和散热提出前所未有的挑战，液冷将成为标配。<b>格局：</b>NVIDIA 短期内无替代威胁，但定制 ASIC（Google TPU v6、Amazon Trainium3）在特定场景性价比已具竞争力。自研芯片的大云厂商正在蚕食 NVIDIA 的定价权。<b>影响：</b>万卡集群 95% 线性扩展效率意味着超大规模训练不再受通信瓶颈制约。</div>
+</div>
+
+<div class="news-item">
+<div class="item-header"><span class="item-number">09</span><div class="item-title-wrap"><span class="tag tag-生物">生物</span><span class="item-title">脑机接口首例全植入式商用产品获 FDA 批准</span></div></div>
+<div class="item-summary">FDA 批准 Precision Neuroscience 的 Link 1.0 上市，这是首个获商业许可的全植入式脑机接口，厚度 0.6mm、1,024 通道，通过微创手术植入硬膜外。首批适应症为运动障碍辅助，定价 4.5 万美元。Neuralink 的 N1 设备同期进入上市申请阶段。</div>
+<a class="item-link" href="#">阅读原文 ↗</a>
+<div class="item-meta"><span class="source">FDA / STAT</span><span class="heat">🔥 高</span></div>
+<div class="insight"><b>行业：</b>脑机接口从实验室走向临床商业化，医疗器械赛道迎来全新品类。4.5 万美元定价与人工耳蜗相当，医保覆盖路径清晰，市场启动条件成熟。<b>趋势：</b>短期聚焦医疗康复，5-10 年后认知增强应用将引发新一轮伦理争论。非医疗用途的脑机接口监管框架尚为空白，需提前布局。<b>影响：</b>Neuralink 和 Precision 的竞争将加速产品迭代和价格下降，患者受益速度超预期。</div>
+</div>
+
+<div class="news-item">
+<div class="item-header"><span class="item-number">10</span><div class="item-title-wrap"><span class="tag tag-能源">能源</span><span class="item-title">全球可再生能源发电量首次超过化石燃料</span></div></div>
+<div class="item-summary">IEA 数据确认 2026 年 4 月全球可再生能源月发电量首次超过化石燃料（占比 50.3%），其中太阳能贡献增速最快（同比 +38%）。这一里程碑比 2022 年的预测提前 3 年达成，中国新增装机占全球 52%。</div>
+<a class="item-link" href="#">阅读原文 ↗</a>
+<div class="item-meta"><span class="source">IEA</span><span class="heat">🔥 中</span></div>
+<div class="insight"><b>趋势：</b>可再生能源跨越 50% 拐点后，化石燃料退出将加速而非减速——经济性优势已不可逆。太阳能 LCOE 已降至化石燃料的 1/3，增量装机几乎全部选择可再生能源。<b>格局：</b>中国在新能源产业链的绝对优势使其成为全球能源转型的核心变量。从硅料到组件，中国占全球产能 80% 以上，供应链依赖引发新一轮安全关切。<b>影响：</b>化石燃料资产搁浅风险上升，传统能源公司加速转型或面临市值重估。</div>
+</div>
+
+<div class="toggle-bar" onclick="toggleSection(this)">▸ 展开 TOP 11-20</div>
+<div class="collapsible-content">
+<div class="item-compact"><span class="item-num">11</span><span class="tag tag-芯片">芯片</span><span class="item-title">台积电 2nm 制程良率突破 80%</span></div>
+<div class="item-compact"><span class="item-num">12</span><span class="tag tag-航天">航天</span><span class="item-title">蓝色起源新格伦火箭首飞成功</span></div>
+<div class="item-compact"><span class="item-num">13</span><span class="tag tag-生物">生物</span><span class="item-title">AlphaFold3 预测所有生命分子相互作用</span></div>
+<div class="item-compact"><span class="item-num">14</span><span class="tag tag-网络">网络</span><span class="item-title">6G 标准草案首次发布，峰值速率达 1Tbps</span></div>
+<div class="item-compact"><span class="item-num">15</span><span class="tag tag-能源">能源</span><span class="item-title">固态电池量产突破，丰田宣布 2027 装车</span></div>
+<div class="item-compact"><span class="item-num">16</span><span class="tag tag-航天">航天</span><span class="item-title">NASA 火星样本返回任务重新启动</span></div>
+<div class="item-compact"><span class="item-num">17</span><span class="tag tag-量子">量子</span><span class="item-title">IBM 1000+ 量子比特处理器首次亮相</span></div>
+<div class="item-compact"><span class="item-num">18</span><span class="tag tag-生物">生物</span><span class="item-title">合成生物学首次创造出全新人造微生物</span></div>
+<div class="item-compact"><span class="item-num">19</span><span class="tag tag-芯片">芯片</span><span class="item-title">RISC-V 生态爆发：全球出货量超 100 亿颗</span></div>
+<div class="item-compact"><span class="item-num">20</span><span class="tag tag-能源">能源</span><span class="item-title">钙钛矿太阳能电池效率突破 35%</span></div>
+</div>
+</div>
+
+<!-- ===== GLOBAL TAB ===== -->
+<div class="tab-content" id="tab-global">
+<div class="stats-bar"><div class="stat-item"><span class="stat-label">地缘政治</span><span class="stat-value">3</span></div><div class="stat-item"><span class="stat-label">经济金融</span><span class="stat-value">3</span></div><div class="stat-item"><span class="stat-label">社会/气候</span><span class="stat-value">3</span></div><div class="stat-item"><span class="stat-label">健康</span><span class="stat-value">1</span></div></div>
+
+<div class="news-item">
+<div class="item-header"><span class="item-number">01</span><div class="item-title-wrap"><span class="tag tag-地缘">地缘</span><span class="item-title">印太安全架构重组：美日菲三边防务条约正式签署</span></div></div>
+<div class="item-summary">美国、日本、菲律宾在华盛顿签署《三边防务合作条约》，包含共同防御条款和联合军演制度化安排，被视为「印太版北约」的关键拼图。中国外交部同日表示「坚决反对在亚太搞封闭排他性军事同盟」，南海局势进入新敏感期。</div>
+<a class="item-link" href="#">阅读原文 ↗</a>
+<div class="item-meta"><span class="source">White House / MFA</span><span class="heat">🔥 极高</span></div>
+<div class="insight"><b>格局：</b>亚太安全架构从「双边轮辐」向「多边网络」演进，阵营化趋势加速。美日菲条约与 AUKUS、Quad 形成多层嵌套的安全网络，印太地区的制度性对抗框架基本成型。<b>趋势：</b>中小国家面临更严峻的选边压力，东盟中心地位被进一步削弱。菲律宾的「选边」可能引发东盟内部分裂。<b>影响：</b>南海擦枪走火风险上升，三方共同防御条款可能降低局部冲突升级为全面对抗的门槛。</div>
+</div>
+
+<div class="news-item">
+<div class="item-header"><span class="item-number">02</span><div class="item-title-wrap"><span class="tag tag-气候">气候</span><span class="item-title">2026 年全球平均气温首次突破 1.5°C 阈值一整年</span></div></div>
+<div class="item-summary">WMO 确认 2026 年 5 月滚动年均全球平均气温较工业化前升高 1.52°C，这是该阈值首次被全年突破。《巴黎协定》1.5°C 目标实质上已失守，极端天气事件频率较 2020 年基线增加 47%，全球气候适应融资缺口扩大至 3,600 亿美元/年。</div>
+<a class="item-link" href="#">阅读原文 ↗</a>
+<div class="item-meta"><span class="source">WMO / Copernicus</span><span class="heat">🔥 极高</span></div>
+<div class="insight"><b>趋势：</b>1.5°C 突破从「预测」变为「现实」，气候政策焦点从「减排保目标」转向「适应求生存」。各国需大幅提升适应投资，否则气候损害的经济成本将远超适应支出。<b>格局：</b>发展中国家要求发达国家兑现损失与损害基金承诺的压力骤增。1,000 亿美元气候融资承诺已连续多年未达标，信任赤字加剧南北对立。<b>影响：</b>极端天气频率+47% 将冲击全球供应链，农业和保险业首当其冲。</div>
+</div>
+
+<div class="news-item">
+<div class="item-header"><span class="item-number">03</span><div class="item-title-wrap"><span class="tag tag-经济">经济</span><span class="item-title">全球债务突破 310 万亿美元，新兴市场违约风险上升</span></div></div>
+<div class="item-summary">IIF 报告显示全球总债务达 310 万亿美元，债务/GDP 比率升至 336%，创历史新高。新兴市场外债偿付压力尤甚，斯里兰卡、加纳、巴基斯坦已进入 IMF 紧急项目，另有 12 国被标普下调主权评级。高利率环境下全球债务可持续性亮起红灯。</div>
+<a class="item-link" href="#">阅读原文 ↗</a>
+<div class="item-meta"><span class="source">IIF / S&amp;P</span><span class="heat">🔥 高</span></div>
+<div class="insight"><b>格局：</b>全球债务货币化空间收窄，主要央行降息与通胀的两难加剧。美联储若降息缓解债务压力则通胀反弹，若维持高利率则债务螺旋恶化，政策空间极度逼仄。<b>趋势：</b>新兴市场可能迎来新一轮主权债务危机，规模或超 1980 年代拉美债务危机。12 国评级下调仅是前兆，更多国家将在未来 12 个月触及违约临界点。<b>影响：</b>全球金融稳定面临系统性风险，IMF 资源充足性将受考验。</div>
+</div>
+
+<div class="news-item">
+<div class="item-header"><span class="item-number">04</span><div class="item-title-wrap"><span class="tag tag-社会">社会</span><span class="item-title">全球生育率跌至 2.0 以下，联合国调整人口预测模型</span></div></div>
+<div class="item-summary">联合国人口司最新数据显示全球总和生育率降至 1.98，首次跌破世代更替水平，较 2022 年预测提前 10 年。东亚、南欧、拉美多国生育率低于 1.3，印度生育率降至 1.9。联合国将 2100 年全球人口预测从 104 亿下调至 88 亿。</div>
+<a class="item-link" href="#">阅读原文 ↗</a>
+<div class="item-meta"><span class="source">UN DESA</span><span class="heat">🔥 高</span></div>
+<div class="insight"><b>趋势：</b>全球人口峰值可能提前至 2060 年代，老龄化将从「发达国问题」变为「全球性问题」。印度和中国的人口红利窗口正在关闭，非洲将成为最后的人口增长极。<b>格局：</b>人口收缩将重塑地缘经济版图，移民竞争成为新常态。人口下降国的劳动力缺口只能通过移民或自动化填补，两者都带来深刻社会变革。<b>影响：</b>养老金和医疗体系在人口结构逆转下面临系统性危机，改革窗口正在关闭。</div>
+</div>
+
+<div class="news-item">
+<div class="item-header"><span class="item-number">05</span><div class="item-title-wrap"><span class="tag tag-地缘">地缘</span><span class="item-title">中东和平进程：沙特-以色列关系正常化谈判取得突破</span></div></div>
+<div class="item-summary">沙特与以色列在美国斡旋下就关系正常化达成框架协议，涵盖安全保证、巴勒斯坦自治过渡方案和经贸合作三大支柱。沙特获美方 F-35 战机承诺和民用核技术合作，以色列同意重启巴以和谈。协议仍需沙特协商会议批准，但已是 30 年来最大突破。</div>
+<a class="item-link" href="#">阅读原文 ↗</a>
+<div class="item-meta"><span class="source">State Dept / Al Jazeera</span><span class="heat">🔥 极高</span></div>
+<div class="insight"><b>格局：</b>中东地缘板块从「对抗主导」向「分化重组」转变，伊朗阵营面临更大孤立压力。沙以正常化若成局，将重塑中东权力三角（沙特-伊朗-以色列），伊朗的「抵抗轴心」战略空间被压缩。<b>趋势：</b>若协议落地，全球油价中枢可能下移 10-15 美元。中东地缘风险溢价下降将释放被冲突冻结的投资。<b>影响：</b>巴勒斯坦自治过渡方案是协议最脆弱环节，执行失败可能引发新一轮暴力循环。</div>
+</div>
+
+<div class="news-item">
+<div class="item-header"><span class="item-number">06</span><div class="item-title-wrap"><span class="tag tag-经济">经济</span><span class="item-title">去美元化加速：金砖国家本币结算占比首次超 30%</span></div></div>
+<div class="item-summary">金砖国家新开发银行数据显示，成员间贸易本币结算占比升至 31.5%，较 2023 年翻倍。人民币在金砖贸易中占比达 18%，卢比和雷亚尔各占 5% 以上。美元在全球外汇储备中占比降至 55%，为 1995 年以来最低。</div>
+<a class="item-link" href="#">阅读原文 ↗</a>
+<div class="item-meta"><span class="source">NDB / IMF</span><span class="heat">🔥 高</span></div>
+<div class="insight"><b>格局：</b>美元霸权进入「缓慢侵蚀」阶段，短期内尚无单一替代货币，但多极货币体系雏形已现。人民币国际化在贸易结算领域进展快于金融储备领域，结构性特征明显。<b>趋势：</b>数字货币跨境支付基础设施将成为去美元化的关键技术推手。mBridge（多边央行数字货币桥）等项目正在构建绕过 SWIFT 的平行支付网络。<b>影响：</b>美元武器化（制裁）加速了各国寻找替代方案的紧迫感，形成正反馈循环。</div>
+</div>
+
+<div class="news-item">
+<div class="item-header"><span class="item-number">07</span><div class="item-title-wrap"><span class="tag tag-健康">健康</span><span class="item-title">WHO 宣布新冠疫情不再构成全球卫生紧急事件</span></div></div>
+<div class="item-summary">WHO 总干事宣布新冠疫情不再构成「国际关注的突发公共卫生事件」（PHEIC），这是自 2020 年 1 月以来首次降级。全球累计确诊超 7 亿例、死亡超 700 万例，目前周新增死亡已降至 500 以下。各国陆续撤销剩余防疫措施，全球进入「与新冠共存」常态化阶段。</div>
+<a class="item-link" href="#">阅读原文 ↗</a>
+<div class="item-meta"><span class="source">WHO</span><span class="heat">🔥 中</span></div>
+<div class="insight"><b>趋势：</b>大流行降级不等于结束，长新冠（Long COVID）影响约 6,500 万人，仍是公共卫生重大挑战。长新冠的慢性负担将持续消耗医疗资源，对劳动力参与率产生长期负面影响。<b>格局：</b>全球大流行防备体系改革（WHO 大流行条约）进入关键谈判期。病原体监测共享和疫苗公平分配两大议题仍存深刻分歧。<b>影响：</b>降级将加速各国将新冠纳入常规呼吸道疾病管理，专项资金和注意力可能转移。</div>
+</div>
+
+<div class="news-item">
+<div class="item-header"><span class="item-number">08</span><div class="item-title-wrap"><span class="tag tag-社会">社会</span><span class="item-title">欧洲极右翼政党在 5 国大选中得票率超 20%，政治版图右移</span></div></div>
+<div class="item-summary">法国国民联盟、德国选择党、意大利兄弟党、荷兰 PVV、奥地利自由党在各自最新大选中得票率均超 20%，其中法国国民联盟获 28% 创历史新高。移民政策和能源转型成为核心议题，欧盟移民配额和绿色新政面临实质性倒退风险。</div>
+<a class="item-link" href="#">阅读原文 ↗</a>
+<div class="item-meta"><span class="source">Euronews / FT</span><span class="heat">🔥 高</span></div>
+<div class="insight"><b>格局：</b>欧洲政治光谱右移加速，传统中左/中右建制派流失选票不可逆。极右翼从「抗议力量」走向「执政力量」，多国组阁离不开极右翼参与，政策影响力实质性上升。<b>趋势：</b>欧盟政策协调难度上升，移民和气候领域的超国家立法可能被成员国否决阻击。欧盟扩员进程也可能因内部分歧而放缓。<b>影响：</b>欧洲一体化进程遭遇冷风，多速欧洲从应急方案变为常态安排。</div>
+</div>
+
+<div class="news-item">
+<div class="item-header"><span class="item-number">09</span><div class="item-title-wrap"><span class="tag tag-经济">经济</span><span class="item-title">全球粮食危机加剧：非洲之角 4,000 万人面临严重饥荒</span></div></div>
+<div class="item-summary">WFP 警告非洲之角（索马里、埃塞俄比亚、肯尼亚、吉布提）4,000 万人处于 IPC 第 3-4 级粮食不安全状态，为 1984 年以来最严重。连续 5 年干旱叠加俄乌冲突推高粮价、全球援助资金削减 30%。南苏丹和也门同步进入紧急状态。</div>
+<a class="item-link" href="#">阅读原文 ↗</a>
+<div class="item-meta"><span class="source">WFP / FAO</span><span class="heat">🔥 极高</span></div>
+<div class="insight"><b>格局：</b>气候冲击、地缘冲突和援助萎缩三重因素叠加，人道响应体系已接近极限。全球人道融资缺口达 60%，援助国国内政治转向使多边援助体系面临生存危机。<b>趋势：</b>若 2026 年下半年拉尼娜加剧干旱，饥荒人口可能突破 5,000 万。气候变化对非洲农业的系统性冲击正在从周期性变为结构性。<b>影响：</b>大规模饥荒将产生难民潮和区域不稳定，溢出效应远超人道范畴。</div>
+</div>
+
+<div class="news-item">
+<div class="item-header"><span class="item-number">10</span><div class="item-title-wrap"><span class="tag tag-地缘">地缘</span><span class="item-title">联合国安理会改革方案首次获五常一致同意进入正式谈判</span></div></div>
+<div class="item-summary">联合国大会以 167 票赞成通过决议，授权就安理会扩大方案启动正式政府间谈判。这是 2005 年以来首次突破「先同意谈判规则」的僵局，五常首次一致投赞成票。方案包括新增 6 个常任理事国席位（非洲 2、亚太 2、拉美 1、西欧 1）和 5 个非常任席位，但否决权改革仍无共识。</div>
+<a class="item-link" href="#">阅读原文 ↗</a>
+<div class="item-meta"><span class="source">UNGA / Reuters</span><span class="heat">🔥 极高</span></div>
+<div class="insight"><b>格局：</b>安理会改革从「不可能」变为「开始谈」，但否决权分配是核心死结，谈判可能持续 5-10 年。五常同意谈判不等于同意放弃否决权，改革上限受此结构性约束。<b>趋势：</b>非洲国家获得常任席位概率最高，日本/印度/巴西的入常之路仍受地区对手阻击。非洲 2 席位的分配本身也将引发非洲内部激烈博弈。<b>影响：</b>安理会合法性危机若持续无解，联合国核心决策机制可能被边缘化。</div>
+</div>
+
+<div class="toggle-bar" onclick="toggleSection(this)">▸ 展开 TOP 11-20</div>
+<div class="collapsible-content">
+<div class="item-compact"><span class="item-num">11</span><span class="tag tag-地缘">地缘</span><span class="item-title">北约正式接纳瑞典为第 33 个成员国</span></div>
+<div class="item-compact"><span class="item-num">12</span><span class="tag tag-经济">经济</span><span class="item-title">日本央行结束负利率时代，全球金融格局调整</span></div>
+<div class="item-compact"><span class="item-num">13</span><span class="tag tag-社会">社会</span><span class="item-title">AI 生成深度伪造影响 10 国大选，民主制度受考验</span></div>
+<div class="item-compact"><span class="item-num">14</span><span class="tag tag-健康">健康</span><span class="item-title">疟疾疫苗大规模接种首次在非洲降低死亡率 50%</span></div>
+<div class="item-compact"><span class="item-num">15</span><span class="tag tag-气候">气候</span><span class="item-title">欧盟碳边境税正式实施，全球贸易规则重塑</span></div>
+<div class="item-compact"><span class="item-num">16</span><span class="tag tag-经济">经济</span><span class="item-title">印度 GDP 增速 7.8% 成为全球增长最快大型经济体</span></div>
+<div class="item-compact"><span class="item-num">17</span><span class="tag tag-社会">社会</span><span class="item-title">全球移民人数突破 3 亿，难民危机持续加剧</span></div>
+<div class="item-compact"><span class="item-num">18</span><span class="tag tag-地缘">地缘</span><span class="item-title">朝鲜半岛局势缓和：朝韩重启离散家属团聚</span></div>
+<div class="item-compact"><span class="item-num">19</span><span class="tag tag-经济">经济</span><span class="item-title">比特币被萨尔瓦多、中非共和国列为法定货币</span></div>
+<div class="item-compact"><span class="item-num">20</span><span class="tag tag-健康">健康</span><span class="item-title">抗生素耐药性危机：WHO 警告超级细菌威胁超癌症</span></div>
+</div>
+</div>
+
+</div>
+<div class="footer">每日要闻 · 由元宝整理</div>
+</div>
+</div>
+<script>
+document.querySelectorAll('.tab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('tab-'+tab.dataset.tab).classList.add('active');
+  });
+});
+
+function toggleSection(bar) {
+  var content = bar.nextElementSibling;
+  if (content.style.display === 'block') {
+    content.style.display = 'none';
+    bar.textContent = '▸ 展开 TOP 11-20';
+  } else {
+    content.style.display = 'block';
+    bar.textContent = '▾ 收起 TOP 11-20';
+  }
+}
+</script>
+</body>
+</html>
